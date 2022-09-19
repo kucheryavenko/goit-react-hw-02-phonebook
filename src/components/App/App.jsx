@@ -3,7 +3,13 @@ import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
     name: '',
     number: '',
   };
@@ -21,15 +27,77 @@ export class App extends Component {
   handleSubmit = evt => {
     evt.preventDefault();
     const { name, number } = this.state;
+    this.addContact({ name, number });
+    this.reset();
+  };
+
+  addContact = contact => {
+    if (this.isDublicate(contact)) {
+      return alert(`${contact.name} is already in contacts.`);
+    }
+    this.setState(prevState => {
+      const newContacts = {
+        id: nanoid(),
+        ...contact,
+      };
+      return {
+        contacts: [newContacts, ...prevState.contacts],
+      };
+    });
+  };
+
+  deleteContact = id => {
+    this.setState(prevState => {
+      const newContacts = prevState.contacts.filter(
+        contact => contact.id !== id
+      );
+      return {
+        contacts: newContacts,
+      };
+    });
+  };
+
+  handleChangeFilter = evt => {
+    const { name, value } = evt.target;
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  getFilterContacts() {
+    const { contacts, filter } = this.state;
+    if (!filter) {
+      return contacts;
+    }
+    const normalizedFilter = filter.toLocaleLowerCase();
+    const filteredContacts = contacts.filter(({ name, number }) => {
+      const normalizedName = name.toLocaleLowerCase();
+      const result =
+        normalizedName.includes(normalizedFilter) ||
+        number.includes(normalizedFilter);
+      return result;
+    });
+    return filteredContacts;
+  }
+  isDublicate({ name, number }) {
+    const { contacts } = this.state;
+    const result = contacts.find(
+      contact => contact.name === name && contact.number === number
+    );
+    return result;
+  }
+
+  reset = () => {
     this.setState({
       name: '',
       number: '',
     });
-    console.log(name, number);
   };
 
   render() {
     const { nameId, numberId } = this;
+    const contacts = this.getFilterContacts();
+
     return (
       <>
         <h1>Phonebook</h1>
@@ -58,6 +126,29 @@ export class App extends Component {
           />
           <button type="submit">Add contact</button>
         </form>
+        <h2>Contacts</h2>
+        <p>Find contacts by name</p>
+        <input
+          type="text"
+          name="filter"
+          value={this.state.filter}
+          onChange={this.handleChangeFilter}
+        />
+        <ul>
+          {contacts.map(contact => (
+            <li key={contact.id}>
+              <p>
+                {contact.name}: <span>{contact.number}</span>
+              </p>
+              <button
+                type="button"
+                onClick={() => this.deleteContact(contact.id)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
       </>
     );
   }
