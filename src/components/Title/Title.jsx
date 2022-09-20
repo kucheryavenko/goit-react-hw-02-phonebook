@@ -1,3 +1,10 @@
+import PropTypes from 'prop-types';
+import { TitleHero } from 'components/Title/Title.styled';
+
 export const Title = ({ title }) => {
-  return <h1>{title}</h1>;
+  return <TitleHero>{title}</TitleHero>;
+};
+
+Title.propTopes = {
+  title: PropTypes.string.isRequired,
 };

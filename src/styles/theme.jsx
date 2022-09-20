@@ -6,6 +6,7 @@ export const theme = {
     accent: '#2da44e',
     hover: '#2c974b',
     border: 'rgba(27,31,36,0.15)',
+    delete: '#d37a73',
   },
   shadows: {
     shadow:

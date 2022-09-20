@@ -5,6 +5,7 @@ import { ContactList } from 'components/ContactList';
 import { Filter } from 'components/Filter';
 import { Section } from 'components/Section';
 import { Title } from 'components/Title';
+import { Container } from 'components/App/App.styled';
 
 export class App extends Component {
   state = {
@@ -80,7 +81,7 @@ export class App extends Component {
     const { filter } = this.state;
 
     return (
-      <>
+      <Container>
         <Title title={'Phonebook'} />
         <ContactForm addContact={addContact} />
         <Section title={'Contacts'}>
@@ -90,7 +91,7 @@ export class App extends Component {
             deleteContact={deleteContact}
           />
         </Section>
-      </>
+      </Container>
     );
   }
 }
